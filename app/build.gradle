@@ -63,11 +63,11 @@ dependencies {
 
     def pagingVersion = "3.1.1"
     implementation "androidx.paging:paging-runtime:$pagingVersion"
-    implementation 'androidx.room:room-paging:2.5.0-beta01'
 
     def roomVersion = "2.4.3"
     implementation "androidx.room:room-ktx:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-paging:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
     def mockitoVersion = "4.4.0"
