@@ -8,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.eureka.githubusers.core.database.GithubUsersDatabase
+import id.eureka.githubusers.core.database.RemoteKeyDao
+import id.eureka.githubusers.users.data.datasource.local.RepositoryDao
 import id.eureka.githubusers.users.data.datasource.local.UserDao
 import javax.inject.Singleton
 
@@ -24,5 +26,13 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun providesStoryDao(database: GithubUsersDatabase): UserDao = database.userDao()
+    fun providesUserDao(database: GithubUsersDatabase): UserDao = database.userDao()
+
+    @Provides
+    @Singleton
+    fun providesRepositoryDao(database: GithubUsersDatabase): RepositoryDao = database.repositoryDao()
+
+    @Provides
+    @Singleton
+    fun providesRemoteKeysDao(database: GithubUsersDatabase): RemoteKeyDao = database.remoteKeyDao()
 }
