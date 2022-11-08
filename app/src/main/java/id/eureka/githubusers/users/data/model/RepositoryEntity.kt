@@ -3,10 +3,11 @@ package id.eureka.githubusers.users.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "repository")
+@Entity(tableName = "repositories")
 data class RepositoryEntity(
     @PrimaryKey
     val id : Int,
+    val userId : Int,
     val allowForking: Boolean? = null,
     val stargazersCount: Int? = null,
     val isTemplate: Boolean? = null,
@@ -59,11 +60,9 @@ data class RepositoryEntity(
     val disabled: Boolean? = null,
     val gitUrl: String? = null,
     val hasPages: Boolean? = null,
-    val owner: OwnerData? = null,
     val commitsUrl: String? = null,
     val compareUrl: String? = null,
     val gitCommitsUrl: String? = null,
-    val topics: List<String?>? = null,
     val blobsUrl: String? = null,
     val gitTagsUrl: String? = null,
     val mergesUrl: String? = null,
@@ -85,25 +84,4 @@ data class RepositoryEntity(
     val nodeId: String? = null,
     val homepage: String? = null,
     val forksCount: Int? = null
-)
-
-data class OwnerData(
-    val gistsUrl: String? = null,
-    val reposUrl: String? = null,
-    val followingUrl: String? = null,
-    val starredUrl: String? = null,
-    val login: String? = null,
-    val followersUrl: String? = null,
-    val type: String? = null,
-    val url: String? = null,
-    val subscriptionsUrl: String? = null,
-    val receivedEventsUrl: String? = null,
-    val avatarUrl: String? = null,
-    val eventsUrl: String? = null,
-    val htmlUrl: String? = null,
-    val siteAdmin: Boolean? = null,
-    val id: Int? = null,
-    val gravatarId: String? = null,
-    val nodeId: String? = null,
-    val organizationsUrl: String? = null
 )
