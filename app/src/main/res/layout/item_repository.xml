@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp">
+
+    <TextView
+        android:id="@+id/tv_repository_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Android-CleanArchitecture" />
+
+    <TextView
+        android:id="@+id/tv_repository_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/dugong"
+        app:layout_constraintStart_toStartOf="@id/tv_repository_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_repository_title"
+        tools:text="This is a sample app that is part of a series of blog posts I have written about how to architect an android application using Uncle Bob's clean architecture approach." />
+
+    <ImageView
+        android:id="@+id/iv_icon_star"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/icon_starred_repository"
+        android:src="@drawable/ic_baseline_star_outline_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_repository_description" />
+
+    <TextView
+        android:id="@+id/tv_starred_repository_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:textColor="@color/dugong"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_star"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_star"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_star"
+        tools:ignore="SmallSp"
+        tools:text="55" />
+
+    <TextView
+        android:id="@+id/tv_last_updated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/dugong"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_star"
+        app:layout_constraintStart_toEndOf="@id/tv_starred_repository_count"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_star"
+        tools:ignore="SmallSp"
+        tools:text="Updated 15 hours ago" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="14dp"
+        android:background="@color/white_smoke"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_star" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

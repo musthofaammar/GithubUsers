@@ -2,4 +2,6 @@
     <string name="app_name">GithubUsers</string>
     <string name="search_placeholder">search user in github</string>
     <string name="something_wrong">Something Wrong</string>
+    <string name="icon_starred_repository">icon_starred_repository</string>
+    <string name="user_image">user_image</string>
 </resources>
