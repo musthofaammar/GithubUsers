@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GithubUsers</string>
+    <string name="search_placeholder">search user in github</string>
     <string name="something_wrong">Something Wrong</string>
 </resources>
