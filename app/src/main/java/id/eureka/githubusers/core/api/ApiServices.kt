@@ -1,6 +1,6 @@
 package id.eureka.githubusers.core.api
 
-import id.eureka.githubusers.users.data.model.GetUserModel
+import id.eureka.githubusers.users.data.model.UserDetailNetworkData
 import id.eureka.githubusers.users.data.model.GetUsersModel
 import retrofit2.Response
 import retrofit2.http.GET
@@ -19,7 +19,7 @@ interface ApiServices {
     @GET("users/{user}")
     fun getUserByUsername(
         @Path("user") userName: String
-    ) : Response<GetUserModel>
+    ) : Response<UserDetailNetworkData>
 
     @GET("users/{user}/repos")
     fun searchRepositoriesByUser(

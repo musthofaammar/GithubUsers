@@ -9,8 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.eureka.githubusers.core.database.GithubUsersDatabase
 import id.eureka.githubusers.core.database.RemoteKeyDao
-import id.eureka.githubusers.users.data.datasource.local.RepositoryDao
-import id.eureka.githubusers.users.data.datasource.local.UserDao
+import id.eureka.githubusers.users.data.datasource.RepositoryDao
+import id.eureka.githubusers.users.data.datasource.UserDao
 import javax.inject.Singleton
 
 @Module
