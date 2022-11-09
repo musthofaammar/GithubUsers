@@ -11,10 +11,10 @@ data class GetUsersModel(
 	val incompleteResults: Boolean,
 
 	@field:SerializedName("items")
-	val items: List<UserData>
+	val items: List<UserNetworkData>
 )
 
-data class UserData(
+data class UserNetworkData(
 
 	@field:SerializedName("gists_url")
 	val gistsUrl: String,
