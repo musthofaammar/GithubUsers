@@ -1,4 +1,4 @@
-package id.eureka.githubusers.users.data.datasource.local
+package id.eureka.githubusers.users.data.datasource
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

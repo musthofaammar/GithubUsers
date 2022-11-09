@@ -2,7 +2,7 @@ package id.eureka.githubusers.users.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GetUserModel(
+data class UserDetailNetworkData(
 
 	@field:SerializedName("gists_url")
 	val gistsUrl: String? = null,
