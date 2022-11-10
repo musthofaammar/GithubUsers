@@ -16,7 +16,6 @@ object RepositoryDataToRepositoryEntity : Mapper<RepositoryData, RepositoryEntit
         hasDiscussions = input.hasDiscussions,
         forks = input.forks,
         visibility = input.visibility,
-        license = input.license,
         fullName = input.fullName,
         size = input.size,
         name = input.name,

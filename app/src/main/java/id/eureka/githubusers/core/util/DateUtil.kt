@@ -29,8 +29,8 @@ object DateUtil {
             val daysDifference = TimeUnit.MILLISECONDS.toDays(difference)
 
             return when {
-                daysDifference < 1 -> "Updated $hoursDifference ago"
-                daysDifference < 7 -> "Updated $daysDifference ago"
+                daysDifference < 1 -> "Updated $hoursDifference hours ago"
+                daysDifference < 7 -> "Updated $daysDifference day ago"
                 else -> "Updated ${simpleDateFormat.format(date)}"
             }
         }

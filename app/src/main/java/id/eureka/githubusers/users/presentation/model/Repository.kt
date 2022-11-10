@@ -11,7 +11,6 @@ data class Repository(
     val hasDiscussions: Boolean,
     val forks: Int,
     val visibility: String,
-    val license: String,
     val fullName: String,
     val size: Int,
     val name: String,

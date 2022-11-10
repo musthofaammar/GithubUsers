@@ -16,7 +16,6 @@ object RepositoryEntityToRepositoryData : Mapper<RepositoryEntity, RepositoryDat
         hasDiscussions = input.hasDiscussions ?: false,
         forks = input.forks ?: 0,
         visibility = input.visibility ?: "",
-        license = input.license ?: "",
         fullName = input.fullName ?: "",
         size = input.size ?: 0,
         name = input.name ?: "",

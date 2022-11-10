@@ -1,11 +1,11 @@
-package id.eureka.githubusers.users.domain.model.mapper
+package id.eureka.githubusers.users.presentation.model.mapper
 
 import id.eureka.githubusers.core.util.Mapper
-import id.eureka.githubusers.users.data.model.RepositoryData
 import id.eureka.githubusers.users.domain.model.RepositoryDomain
+import id.eureka.githubusers.users.presentation.model.Repository
 
-object RepositoryDataToRepositoryDomain : Mapper<RepositoryData, RepositoryDomain> {
-    override fun map(input: RepositoryData): RepositoryDomain = RepositoryDomain(
+object RepositoryDomainToRepository : Mapper<RepositoryDomain, Repository> {
+    override fun map(input: RepositoryDomain) = Repository(
         id = input.id,
         userId = input.userId,
         allowForking = input.allowForking,

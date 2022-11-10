@@ -2,12 +2,6 @@ package id.eureka.githubusers.users.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GetRepositoriesModel(
-
-	@field:SerializedName("GetRepositoriesModel")
-	val getRepositoriesModel: List<RepositoryNetworkData>? = null
-)
-
 data class Owner(
 
 	@field:SerializedName("gists_url")
@@ -129,9 +123,6 @@ data class RepositoryNetworkData(
 
 	@field:SerializedName("ssh_url")
 	val sshUrl: String? = null,
-
-	@field:SerializedName("license")
-	val license: String? = null,
 
 	@field:SerializedName("full_name")
 	val fullName: String? = null,

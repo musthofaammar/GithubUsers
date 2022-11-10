@@ -24,6 +24,9 @@ interface UserDao {
     @Query("Select * from users where login like :query")
     fun getUsers(query : String) : PagingSource<Int, UserEntity>
 
-    @Query("Delete from users")
+    @Query("Select * from users where updatedAt is not null")
+    fun getUsersWithFullData() : List<UserEntity>
+
+    @Query("Delete from users where updatedAt is null")
     suspend fun deleteUsers()
 }

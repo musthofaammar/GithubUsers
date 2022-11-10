@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.eureka.githubusers.core.model.Result
 import id.eureka.githubusers.core.provider.DispatcherProvider
+import id.eureka.githubusers.users.domain.usecase.GetRepositoriesUseCase
 import id.eureka.githubusers.users.domain.usecase.GetUserByUserIdOrUserNameUseCase
 import id.eureka.githubusers.users.presentation.model.DetailUserUIState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailUserViewModel @Inject constructor(
     private val getUserByUserIdOrUserNameUseCase: GetUserByUserIdOrUserNameUseCase,
-    private val dispatcherProvider: DispatcherProvider
+    private val getRepositoriesUseCase: GetRepositoriesUseCase,
+    private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
     private val _detailUserState: MutableStateFlow<DetailUserUIState> =
@@ -27,11 +29,21 @@ class DetailUserViewModel @Inject constructor(
         viewModelScope.launch {
             getUserByUserIdOrUserNameUseCase.getUserByUserIdOrUserName(userName, userId)
                 .collectLatest { result ->
-                    when(result){
-                        is Result.Error -> _detailUserState.value = DetailUserUIState.Error(result.message)
-                        is Result.Success -> _detailUserState.value = DetailUserUIState.GetUserDetailSuccess(result.data)
+                    when (result) {
+                        is Result.Error -> _detailUserState.value =
+                            DetailUserUIState.Error(result.message)
+                        is Result.Success -> _detailUserState.value =
+                            DetailUserUIState.GetUserDetailSuccess(result.data)
                     }
                 }
+        }
+    }
+
+    fun getUserRepositories(userName: String, userId: Int) {
+        viewModelScope.launch {
+            getRepositoriesUseCase.getRepositories(userName, userId).collectLatest { result ->
+                _detailUserState.value = DetailUserUIState.GetUserRepositoriesSuccess(result)
+            }
         }
     }
 }

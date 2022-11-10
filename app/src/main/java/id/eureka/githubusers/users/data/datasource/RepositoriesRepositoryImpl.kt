@@ -19,15 +19,15 @@ class RepositoriesRepositoryImpl @Inject constructor(
     private val repositoryDao: RepositoryDao,
     private val remoteKeyDao: RemoteKeyDao,
     private val services: ApiServices,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
 ) : RepositoriesRepository {
     override suspend fun getRepositories(
         userName: String,
-        userId: Int
+        userId: Int,
     ): Flow<PagingData<RepositoryDomain>> {
         return Pager(
             config = PagingConfig(
-                pageSize = UsersRemoteMediator.NETWORK_CALL_SIZE,
+                pageSize = RepositoriesRemoteMediator.NETWORK_CALL_SIZE,
                 enablePlaceholders = true
             ),
             remoteMediator = RepositoriesRemoteMediator(
@@ -38,7 +38,8 @@ class RepositoriesRepositoryImpl @Inject constructor(
                 userId
             ),
             pagingSourceFactory = {
-                repositoryDao.getRepositoriesByUserId(userId)
+                val repo = repositoryDao.getRepositoriesByUserId(userId)
+                repo
             }
         ).flow.flowOn(dispatcherProvider.getIO()).mapLatest { paging ->
             paging.map { userEntity ->

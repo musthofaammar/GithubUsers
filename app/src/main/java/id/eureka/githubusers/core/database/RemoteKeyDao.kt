@@ -17,8 +17,14 @@ interface RemoteKeyDao {
     @Query("Select * from remote_keys where id = :id and keyTag = 2")
     suspend fun getRepositoryRemoteKeysId(id : String) : RemoteKeys?
 
+    @Query("Select * from remote_keys where keyTag = 1")
+    suspend fun getUserRemoteKeys() : List<RemoteKeys>
+
     @Query("Delete from remote_keys where keyTag = 1")
     suspend fun deleteUserRemoteKeys()
+
+    @Query("Delete from remote_keys where keyTag = 1 and id = :id")
+    suspend fun deleteUserRemoteKeysWithId(id : String)
 
     @Query("Delete from remote_keys where keyTag = 2")
     suspend fun deleteRepositoryRemoteKeys()

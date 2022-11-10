@@ -53,7 +53,9 @@ class DetailUserActivity : AppCompatActivity() {
                     DetailUserUIState.Empty -> Unit
                     is DetailUserUIState.Error -> showShortSnackBar(binding.root, state.message)
                     is DetailUserUIState.GetUserDetailSuccess -> setUser(state.data)
-                    is DetailUserUIState.GetUserRepositoriesSuccess -> adapter.submitData(state.data)
+                    is DetailUserUIState.GetUserRepositoriesSuccess -> {
+                        adapter.submitData(state.data)
+                    }
                     DetailUserUIState.Loading -> Unit
                 }
             }
@@ -75,7 +77,10 @@ class DetailUserActivity : AppCompatActivity() {
             val user = it.getParcelable(USER_DATA) as User?
 
             user?.let { value ->
-                viewModel.getUserDetail(value.login, value.id)
+                with(viewModel) {
+                    getUserDetail(value.login, value.id)
+                    getUserRepositories(value.login, value.id)
+                }
             }
         }
     }

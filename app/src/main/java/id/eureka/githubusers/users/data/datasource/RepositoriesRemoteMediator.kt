@@ -54,10 +54,10 @@ class RepositoriesRemoteMediator(
                 page,
                 state.config.pageSize
             )
-            val endOfPaginationReached = responseData.body()?.getRepositoriesModel.isNullOrEmpty()
+            val endOfPaginationReached = responseData.body()?.isEmpty() ?: true
 
             val repositoryEntities = if (!endOfPaginationReached) {
-                responseData.body()?.getRepositoriesModel?.map {
+                responseData.body()?.map {
                     RepositoryDataToRepositoryEntity.map(RepositoryNetworkDataToRepositoryData.map(it))
                 } ?: emptyList()
             } else {
@@ -79,7 +79,7 @@ class RepositoriesRemoteMediator(
 
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (endOfPaginationReached) null else page + 1
-            val keys = responseData.body()?.getRepositoriesModel?.map {
+            val keys = responseData.body()?.map {
                 RemoteKeys(id = "r${it.id}", prevKey = prevKey, nextKey = nextKey, 1)
             }
 

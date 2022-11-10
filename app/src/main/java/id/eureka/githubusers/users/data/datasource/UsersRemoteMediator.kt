@@ -24,7 +24,7 @@ class UsersRemoteMediator(
     }
 
     override suspend fun load(
-        loadType: LoadType, state: PagingState<Int, UserEntity>
+        loadType: LoadType, state: PagingState<Int, UserEntity>,
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -34,25 +34,20 @@ class UsersRemoteMediator(
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
                 val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null
-                )
+                    endOfPaginationReached = remoteKeys != null)
                 prevKey
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
                 val nextKey = remoteKeys?.nextKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null
-                )
+                    endOfPaginationReached = remoteKeys != null)
                 nextKey
             }
         }
 
         try {
-            val responseData = services.searchUsers(
-                userName.ifEmpty { "\"\"" },
-                page,
-                state.config.pageSize
-            )
+            val responseData =
+                services.searchUsers(userName.ifEmpty { "\"\"" }, page, state.config.pageSize)
             val endOfPaginationReached = responseData.body()?.items.isNullOrEmpty()
 
             val userEntities = if (!endOfPaginationReached) {
@@ -72,7 +67,14 @@ class UsersRemoteMediator(
 //            }
 
             if (loadType == LoadType.REFRESH) {
+
+//                val userWithFullData = userDao.getUsersWithFullData()
                 remoteKeysDao.deleteUserRemoteKeys()
+
+//                userWithFullData.map { userEntity ->
+//                    val keys = RemoteKeys(id = "u${userEntity.id}", prevKey = prevKey, nextKey = nextKey, 1)
+//                }
+
                 userDao.deleteUsers()
             }
 
