@@ -9,7 +9,7 @@ import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.core.provider.ResourceProvider
 import id.eureka.githubusers.users.domain.usecase.SearchUserUseCase
 import id.eureka.githubusers.users.presentation.model.UserUIState
-import id.eureka.githubusers.users.presentation.model.mapper.UserDomainToUserData
+import id.eureka.githubusers.users.presentation.model.mapper.UserDomainToUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -46,7 +46,7 @@ class UserViewModel @Inject constructor(
                 }
                 .collect { result ->
                     _userUiState.value =
-                        UserUIState.SearchUserSuccess(result.map { UserDomainToUserData.map(it) })
+                        UserUIState.SearchUserSuccess(result.map { UserDomainToUser.map(it) })
                 }
         }
     }

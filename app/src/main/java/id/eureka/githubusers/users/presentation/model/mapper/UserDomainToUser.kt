@@ -4,7 +4,7 @@ import id.eureka.githubusers.core.util.Mapper
 import id.eureka.githubusers.users.domain.model.UserDomain
 import id.eureka.githubusers.users.presentation.model.User
 
-object UserDomainToUserData : Mapper<UserDomain, User> {
+object UserDomainToUser : Mapper<UserDomain, User> {
     override fun map(input: UserDomain): User = User(
         id = input.id,
         bio = input.bio,

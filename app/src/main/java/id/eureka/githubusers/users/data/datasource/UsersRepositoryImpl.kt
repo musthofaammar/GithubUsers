@@ -8,16 +8,14 @@ import id.eureka.githubusers.core.model.Result
 import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.core.provider.ResourceProvider
 import id.eureka.githubusers.core.util.ErrorMapper
-import id.eureka.githubusers.users.data.model.UserData
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDetailNetworkDataToUserData
 import id.eureka.githubusers.users.data.model.mapper.UserEntityToUserData
+import id.eureka.githubusers.users.domain.model.UserDomain
+import id.eureka.githubusers.users.domain.model.mapper.UserDataToUserDomain
 import id.eureka.githubusers.users.domain.repository.UsersRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
@@ -29,7 +27,7 @@ class UsersRepositoryImpl @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val dispatcherProvider: DispatcherProvider
 ) : UsersRepository {
-    override suspend fun searchUsers(userName: String): Flow<PagingData<UserData>> {
+    override suspend fun searchUsers(userName: String): Flow<PagingData<UserDomain>> {
         return Pager(
             config = PagingConfig(
                 pageSize = UsersRemoteMediator.NETWORK_CALL_SIZE,
@@ -49,12 +47,12 @@ class UsersRepositoryImpl @Inject constructor(
             }
         ).flow.mapLatest { paging ->
             paging.map { userEntity ->
-                UserEntityToUserData.map(userEntity)
+                UserDataToUserDomain.map(UserEntityToUserData.map(userEntity))
             }
         }
     }
 
-    override suspend fun getUserDetail(userName: String, userId: Int): Flow<Result<UserData>> =
+    override suspend fun getUserDetail(userName: String, userId: Int): Flow<Result<UserDomain>> =
         flow {
             try {
                 val response = services.getUserByUsername(userName)
@@ -81,5 +79,10 @@ class UsersRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        }.flowOn(dispatcherProvider.getIO())
+        }.flowOn(dispatcherProvider.getIO()).map { result ->
+            when (result) {
+                is Result.Error -> result
+                is Result.Success -> Result.Success(UserDataToUserDomain.map(result.data))
+            }
+        }
 }
