@@ -69,7 +69,8 @@ class UsersRepositoryImpl @Inject constructor(
                 }
 
 
-                val userData = UserEntityToUserData.map(userDao.getUser(userId))
+                val user = userDao.getUser(userId)
+                val userData = UserEntityToUserData.map(user)
                 emit(Result.Success(userData))
             } catch (e: Exception) {
                 emit(

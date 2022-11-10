@@ -72,14 +72,14 @@ class UsersRemoteMediator(
 //            }
 
             if (loadType == LoadType.REFRESH) {
-                remoteKeysDao.deleteRemoteKeys()
+                remoteKeysDao.deleteUserRemoteKeys()
                 userDao.deleteUsers()
             }
 
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (endOfPaginationReached) null else page + 1
             val keys = responseData.body()?.items?.map {
-                RemoteKeys(id = it.id.toString(), prevKey = prevKey, nextKey = nextKey)
+                RemoteKeys(id = "u${it.id}", prevKey = prevKey, nextKey = nextKey, 1)
             }
 
             if (!keys.isNullOrEmpty()) {
@@ -105,20 +105,20 @@ class UsersRemoteMediator(
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { data ->
-            remoteKeysDao.getRemoteKeysId(data.id.toString())
+            remoteKeysDao.getUserRemoteKeysId("u${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { data ->
-            remoteKeysDao.getRemoteKeysId(data.id.toString())
+            remoteKeysDao.getUserRemoteKeysId("u${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                remoteKeysDao.getRemoteKeysId(id.toString())
+                remoteKeysDao.getUserRemoteKeysId("u${id}")
             }
         }
     }

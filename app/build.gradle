@@ -24,7 +24,7 @@ android {
         debug{
             buildConfigField "String", "BASE_URL", '\"https://api.github.com\"'
             buildConfigField "String", "USERNAME_GITHUB", '\"musthofaammar\"'
-            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
+            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
         }
         release {
             minifyEnabled false
