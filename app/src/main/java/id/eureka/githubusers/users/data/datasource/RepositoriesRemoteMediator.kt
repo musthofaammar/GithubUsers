@@ -64,14 +64,6 @@ class RepositoriesRemoteMediator(
                 emptyList()
             }
 
-//            when{
-//                loadType == LoadType.REFRESH && page == 1 && userEntities.isNotEmpty() -> {}
-//                loadType == LoadType.REFRESH -> {
-//                    remoteKeysDao.deleteRemoteKeys()
-//                    userDao.deleteUsers()
-//                }
-//            }
-
             if (loadType == LoadType.REFRESH) {
                 remoteKeysDao.deleteRepositoryRemoteKeys()
                 repositoryDao.deleteUsersRepositories(userId)

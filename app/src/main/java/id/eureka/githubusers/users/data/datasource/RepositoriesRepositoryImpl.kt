@@ -38,8 +38,7 @@ class RepositoriesRepositoryImpl @Inject constructor(
                 userId
             ),
             pagingSourceFactory = {
-                val repo = repositoryDao.getRepositoriesByUserId(userId)
-                repo
+                repositoryDao.getRepositoriesByUserId(userId)
             }
         ).flow.flowOn(dispatcherProvider.getIO()).mapLatest { paging ->
             paging.map { userEntity ->

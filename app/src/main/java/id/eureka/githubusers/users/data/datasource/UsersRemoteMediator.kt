@@ -58,23 +58,8 @@ class UsersRemoteMediator(
                 emptyList()
             }
 
-//            when{
-//                loadType == LoadType.REFRESH && page == 1 && userEntities.isNotEmpty() -> {}
-//                loadType == LoadType.REFRESH -> {
-//                    remoteKeysDao.deleteRemoteKeys()
-//                    userDao.deleteUsers()
-//                }
-//            }
-
             if (loadType == LoadType.REFRESH) {
-
-//                val userWithFullData = userDao.getUsersWithFullData()
                 remoteKeysDao.deleteUserRemoteKeys()
-
-//                userWithFullData.map { userEntity ->
-//                    val keys = RemoteKeys(id = "u${userEntity.id}", prevKey = prevKey, nextKey = nextKey, 1)
-//                }
-
                 userDao.deleteUsers()
             }
 
