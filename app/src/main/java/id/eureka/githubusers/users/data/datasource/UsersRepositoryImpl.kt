@@ -8,13 +8,18 @@ import id.eureka.githubusers.core.model.Result
 import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.core.provider.ResourceProvider
 import id.eureka.githubusers.core.util.ErrorMapper
-import id.eureka.githubusers.users.data.model.UserData
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDetailNetworkDataToUserData
 import id.eureka.githubusers.users.data.model.mapper.UserEntityToUserData
+import id.eureka.githubusers.users.domain.model.UserDomain
+import id.eureka.githubusers.users.domain.model.mapper.UserDataToUserDomain
 import id.eureka.githubusers.users.domain.repository.UsersRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
@@ -22,31 +27,35 @@ class UsersRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val remoteKeyDao: RemoteKeyDao,
     private val services: ApiServices,
-    private val errorMapper: ErrorMapper,
     private val resourceProvider: ResourceProvider,
+    private val errorMapper: ErrorMapper,
     private val dispatcherProvider: DispatcherProvider
 ) : UsersRepository {
-    override suspend fun searchUsers(userName: String): Flow<PagingData<UserData>> {
+    override suspend fun searchUsers(userName: String): Flow<PagingData<UserDomain>> {
         return Pager(
             config = PagingConfig(
                 pageSize = UsersRemoteMediator.NETWORK_CALL_SIZE,
-                enablePlaceholders = true
+                enablePlaceholders = false
             ),
             remoteMediator = UsersRemoteMediator(
                 userDao,
                 remoteKeyDao,
                 services,
+                errorMapper,
                 userName
             ),
-            pagingSourceFactory = { userDao.getUsers() }
-        ).flow.mapLatest { paging ->
+            pagingSourceFactory = {
+//                userDao.getUsers()
+                if (userName.isEmpty()) userDao.getUsers() else userDao.getUsers(userName)
+            }
+        ).flow.flowOn(dispatcherProvider.getIO()).map { paging ->
             paging.map { userEntity ->
-                UserEntityToUserData.map(userEntity)
+                UserDataToUserDomain.map(UserEntityToUserData.map(userEntity))
             }
         }
     }
 
-    override suspend fun getUserDetail(userName: String, userId: Int): Flow<Result<UserData>> =
+    override suspend fun getUserDetail(userName: String, userId: Int): Flow<Result<UserDomain>> =
         flow {
             try {
                 val response = services.getUserByUsername(userName)
@@ -62,8 +71,13 @@ class UsersRepositoryImpl @Inject constructor(
                     }
                 }
 
+                val user = userDao.getUser(userId)
+                val userData = UserEntityToUserData.map(user)
+                emit(Result.Success(userData))
 
-                val userData = UserEntityToUserData.map(userDao.getUser(userId))
+            } catch (e: UnknownHostException) {
+                val user = userDao.getUser(userId)
+                val userData = UserEntityToUserData.map(user)
                 emit(Result.Success(userData))
             } catch (e: Exception) {
                 emit(
@@ -73,5 +87,10 @@ class UsersRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        }.flowOn(dispatcherProvider.getIO())
+        }.flowOn(dispatcherProvider.getIO()).map { result ->
+            when (result) {
+                is Result.Error -> result
+                is Result.Success -> Result.Success(UserDataToUserDomain.map(result.data))
+            }
+        }
 }

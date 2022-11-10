@@ -2,12 +2,6 @@ package id.eureka.githubusers.users.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GetRepositoriesModel(
-
-	@field:SerializedName("GetRepositoriesModel")
-	val getRepositoriesModel: List<GetRepositoriesModelItem?>? = null
-)
-
 data class Owner(
 
 	@field:SerializedName("gists_url")
@@ -65,7 +59,7 @@ data class Owner(
 	val organizationsUrl: String? = null
 )
 
-data class GetRepositoriesModelItem(
+data class RepositoryNetworkData(
 
 	@field:SerializedName("allow_forking")
 	val allowForking: Boolean? = null,
@@ -129,9 +123,6 @@ data class GetRepositoriesModelItem(
 
 	@field:SerializedName("ssh_url")
 	val sshUrl: String? = null,
-
-	@field:SerializedName("license")
-	val license: String? = null,
 
 	@field:SerializedName("full_name")
 	val fullName: String? = null,

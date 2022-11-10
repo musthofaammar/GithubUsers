@@ -2,6 +2,7 @@ package id.eureka.githubusers.core.util
 
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object DateUtil {
     fun isDateAfter(firstDateString: String, secondDateString: String): Boolean {
@@ -13,6 +14,28 @@ object DateUtil {
         }
 
         return false
+    }
+
+    fun formatDate(dateString: String): String {
+        val date = stringToDate(dateString)
+
+        if (date != null) {
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val dateNow = Calendar.getInstance().timeInMillis
+
+            val difference = dateNow - date.time
+
+            val hoursDifference = TimeUnit.MILLISECONDS.toHours(difference)
+            val daysDifference = TimeUnit.MILLISECONDS.toDays(difference)
+
+            return when {
+                daysDifference < 1 -> "Updated $hoursDifference hours ago"
+                daysDifference < 7 -> "Updated $daysDifference day ago"
+                else -> "Updated ${simpleDateFormat.format(date)}"
+            }
+        }
+
+        return "Wrong Time"
     }
 
     private fun stringToDate(date: String): Date? {

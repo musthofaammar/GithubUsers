@@ -2,7 +2,6 @@ package id.eureka.githubusers.users.data.model.mapper
 
 import id.eureka.githubusers.core.util.Mapper
 import id.eureka.githubusers.users.data.model.UserData
-import id.eureka.githubusers.users.data.model.UserNetworkData
 import id.eureka.githubusers.users.data.model.UserEntity
 
 object UserEntityToUserData : Mapper<UserEntity, UserData> {

@@ -28,7 +28,6 @@ data class RepositoryEntity(
     val visibility: String? = null,
     val statusesUrl: String? = null,
     val sshUrl: String? = null,
-    val license: String? = null,
     val fullName: String? = null,
     val size: Int? = null,
     val languagesUrl: String? = null,

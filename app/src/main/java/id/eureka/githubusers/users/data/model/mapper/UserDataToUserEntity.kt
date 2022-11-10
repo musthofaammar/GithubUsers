@@ -2,24 +2,23 @@ package id.eureka.githubusers.users.data.model.mapper
 
 import id.eureka.githubusers.core.util.Mapper
 import id.eureka.githubusers.users.data.model.UserData
-import id.eureka.githubusers.users.data.model.UserNetworkData
 import id.eureka.githubusers.users.data.model.UserEntity
 
 object UserDataToUserEntity : Mapper<UserData, UserEntity>{
     override fun map(input: UserData) = UserEntity(
         id = input.id,
-        bio = null,
-        createdAt = null,
+        bio = input.bio,
+        createdAt = input.createdAt,
         login = input.login,
-        updatedAt = null,
-        company = null,
-        publicRepos = null,
+        updatedAt = input.updatedAt,
+        company = input.company,
+        publicRepos = input.publicRepos,
         gravatarId = input.gravatarId,
-        email = null,
-        publicGists = null,
-        followers = null,
+        email = input.email,
+        publicGists = input.publicGists,
+        followers = input.followers,
         avatarUrl = input.avatarUrl,
-        following = null,
-        name = null
+        following = input.following,
+        name = input.name
     )
 }

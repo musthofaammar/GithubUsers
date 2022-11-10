@@ -7,5 +7,12 @@ import androidx.room.PrimaryKey
 data class RemoteKeys(
     @PrimaryKey val id: String,
     val prevKey: Int?,
-    val nextKey: Int?
+    val nextKey: Int?,
+    val keyTag: Int
 )
+
+/*Note
+* keyTag 1 for users
+* keyTag 2 for repositories
+* */
+

@@ -15,6 +15,6 @@ interface RepositoryDao {
     @Query("Select * from repositories where userId is :userId")
     fun getRepositoriesByUserId(userId : Int): PagingSource<Int, RepositoryEntity>
 
-    @Query("Delete from repositories")
-    suspend fun deleteRepositories()
+    @Query("Delete from repositories where userId = :userId")
+    suspend fun deleteUsersRepositories(userId: Int)
 }

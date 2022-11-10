@@ -24,7 +24,7 @@ android {
         debug{
             buildConfigField "String", "BASE_URL", '\"https://api.github.com\"'
             buildConfigField "String", "USERNAME_GITHUB", '\"musthofaammar\"'
-            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
+            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
         }
         release {
             minifyEnabled false
@@ -38,6 +38,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -46,6 +49,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.12'
 
     def daggerVersion = "2.44"
     implementation "com.google.dagger:hilt-android:$daggerVersion"

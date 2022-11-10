@@ -6,7 +6,7 @@ import id.eureka.githubusers.users.data.model.UserNetworkData
 
 object UserNetworkDataToUserData : Mapper<UserNetworkData, UserData> {
     override fun map(input: UserNetworkData) = UserData(
-        id = input.id,
+        id = input.id ?: 0,
         bio = null,
         createdAt = null,
         login = input.login,

@@ -7,7 +7,7 @@ import androidx.paging.RemoteMediator
 import id.eureka.githubusers.core.api.ApiServices
 import id.eureka.githubusers.core.database.RemoteKeyDao
 import id.eureka.githubusers.core.database.RemoteKeys
-import id.eureka.githubusers.core.util.DateUtil
+import id.eureka.githubusers.core.util.ErrorMapper
 import id.eureka.githubusers.users.data.model.UserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserNetworkDataToUserData
@@ -17,6 +17,7 @@ class UsersRemoteMediator(
     private val userDao: UserDao,
     private val remoteKeysDao: RemoteKeyDao,
     private val services: ApiServices,
+    private val errorMapper: ErrorMapper,
     private val userName: String,
 ) : RemoteMediator<Int, UserEntity>() {
 
@@ -25,7 +26,7 @@ class UsersRemoteMediator(
     }
 
     override suspend fun load(
-        loadType: LoadType, state: PagingState<Int, UserEntity>
+        loadType: LoadType, state: PagingState<Int, UserEntity>,
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -49,7 +50,8 @@ class UsersRemoteMediator(
         }
 
         try {
-            val responseData = services.searchUsers(userName, page, state.config.pageSize)
+            val responseData =
+                services.searchUsers(userName.ifEmpty { "\"\"" }, page, state.config.pageSize)
             val endOfPaginationReached = responseData.body()?.items.isNullOrEmpty()
 
             val userEntities = if (!endOfPaginationReached) {
@@ -60,15 +62,17 @@ class UsersRemoteMediator(
                 emptyList()
             }
 
-            if (loadType == LoadType.REFRESH) {
-                remoteKeysDao.deleteRemoteKeys()
-                userDao.deleteUsers()
+            if (loadType == LoadType.REFRESH && responseData.isSuccessful) {
+                remoteKeysDao.deleteUserRemoteKeys()
+
+//                if (userName.isNotEmpty()) userDao.deleteUsers() else userDao.deleteUsersExceptFullData()
+                userDao.deleteUsersExceptFullData()
             }
 
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (endOfPaginationReached) null else page + 1
             val keys = responseData.body()?.items?.map {
-                RemoteKeys(id = it.id.toString(), prevKey = prevKey, nextKey = nextKey)
+                RemoteKeys(id = "u${it.id}", prevKey = prevKey, nextKey = nextKey, 1)
             }
 
             if (!keys.isNullOrEmpty()) {
@@ -86,6 +90,12 @@ class UsersRemoteMediator(
                 }
             }
 
+            if (!responseData.isSuccessful) {
+                val message =
+                    errorMapper.getErrorMessageFromBody(responseData.errorBody()?.string())
+                throw Exception(message)
+            }
+
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
             return MediatorResult.Error(e)
@@ -94,20 +104,20 @@ class UsersRemoteMediator(
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { data ->
-            remoteKeysDao.getRemoteKeysId(data.id.toString())
+            remoteKeysDao.getUserRemoteKeysId("u${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { data ->
-            remoteKeysDao.getRemoteKeysId(data.id.toString())
+            remoteKeysDao.getUserRemoteKeysId("u${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, UserEntity>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                remoteKeysDao.getRemoteKeysId(id.toString())
+                remoteKeysDao.getUserRemoteKeysId("u${id}")
             }
         }
     }

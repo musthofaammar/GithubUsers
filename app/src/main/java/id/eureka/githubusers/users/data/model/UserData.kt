@@ -2,17 +2,17 @@ package id.eureka.githubusers.users.data.model
 
 data class UserData(
     val id: Int,
-    val bio: String? = null,
-    val createdAt: String? = null,
-    val login: String? = null,
-    val updatedAt: String? = null,
-    val company: String? = null,
-    val publicRepos: Int? = null,
-    val gravatarId: String? = null,
-    val email: String? = null,
-    val publicGists: Int? = null,
-    val followers: Int? = null,
-    val avatarUrl: String? = null,
-    val following: Int? = null,
-    val name: String? = null
+    val bio: String?,
+    val createdAt: String?,
+    val login: String?,
+    val updatedAt: String?,
+    val company: String?,
+    val publicRepos: Int?,
+    val gravatarId: String?,
+    val email: String?,
+    val publicGists: Int?,
+    val followers: Int?,
+    val avatarUrl: String?,
+    val following: Int?,
+    val name: String?
 )
