@@ -7,7 +7,6 @@ import androidx.paging.RemoteMediator
 import id.eureka.githubusers.core.api.ApiServices
 import id.eureka.githubusers.core.database.RemoteKeyDao
 import id.eureka.githubusers.core.database.RemoteKeys
-import id.eureka.githubusers.core.util.DateUtil
 import id.eureka.githubusers.users.data.model.UserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserNetworkDataToUserData
@@ -49,7 +48,11 @@ class UsersRemoteMediator(
         }
 
         try {
-            val responseData = services.searchUsers(userName, page, state.config.pageSize)
+            val responseData = services.searchUsers(
+                userName.ifEmpty { "\"\"" },
+                page,
+                state.config.pageSize
+            )
             val endOfPaginationReached = responseData.body()?.items.isNullOrEmpty()
 
             val userEntities = if (!endOfPaginationReached) {
@@ -59,6 +62,14 @@ class UsersRemoteMediator(
             } else {
                 emptyList()
             }
+
+//            when{
+//                loadType == LoadType.REFRESH && page == 1 && userEntities.isNotEmpty() -> {}
+//                loadType == LoadType.REFRESH -> {
+//                    remoteKeysDao.deleteRemoteKeys()
+//                    userDao.deleteUsers()
+//                }
+//            }
 
             if (loadType == LoadType.REFRESH) {
                 remoteKeysDao.deleteRemoteKeys()

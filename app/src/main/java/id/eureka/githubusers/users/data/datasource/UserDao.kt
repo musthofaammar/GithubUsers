@@ -21,6 +21,9 @@ interface UserDao {
     @Query("Select * from users")
     fun getUsers(): PagingSource<Int, UserEntity>
 
+    @Query("Select * from users where login like :query")
+    fun getUsers(query : String) : PagingSource<Int, UserEntity>
+
     @Query("Delete from users")
     suspend fun deleteUsers()
 }

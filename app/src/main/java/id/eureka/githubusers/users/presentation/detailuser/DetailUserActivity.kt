@@ -9,4 +9,8 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_user)
     }
+
+    companion object {
+        const val USER_DATA = "USER_DATA"
+    }
 }

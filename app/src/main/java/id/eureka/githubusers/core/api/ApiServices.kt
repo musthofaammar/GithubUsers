@@ -10,19 +10,19 @@ import retrofit2.http.Query
 interface ApiServices {
 
     @GET("search/users")
-    fun searchUsers(
-        @Query("q") userName: String = "",
+    suspend fun searchUsers(
+        @Query("q") userName: String? = "\"\"",
         @Query("page") page: Int = 1,
         @Query("per_page") size: Int = 10
     ) : Response<GetUsersModel>
 
     @GET("users/{user}")
-    fun getUserByUsername(
+    suspend fun getUserByUsername(
         @Path("user") userName: String
     ) : Response<UserDetailNetworkData>
 
     @GET("users/{user}/repos")
-    fun searchRepositoriesByUser(
+    suspend fun searchRepositoriesByUser(
         @Path("user") userName: String,
         @Query("page") page: Int = 1,
         @Query("per_page") size: Int = 10

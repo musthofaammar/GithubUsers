@@ -14,7 +14,10 @@ import id.eureka.githubusers.users.data.model.mapper.UserDetailNetworkDataToUser
 import id.eureka.githubusers.users.data.model.mapper.UserEntityToUserData
 import id.eureka.githubusers.users.domain.repository.UsersRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
@@ -38,7 +41,12 @@ class UsersRepositoryImpl @Inject constructor(
                 services,
                 userName
             ),
-            pagingSourceFactory = { userDao.getUsers() }
+            pagingSourceFactory = {
+//                if (userName.isEmpty()) userDao.getUsers() else userDao.getUsers(
+//                    userName
+//                )
+                userDao.getUsers()
+            }
         ).flow.mapLatest { paging ->
             paging.map { userEntity ->
                 UserEntityToUserData.map(userEntity)

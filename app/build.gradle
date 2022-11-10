@@ -24,7 +24,7 @@ android {
         debug{
             buildConfigField "String", "BASE_URL", '\"https://api.github.com\"'
             buildConfigField "String", "USERNAME_GITHUB", '\"musthofaammar\"'
-            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
+            buildConfigField "String", "TOKEN_GITHUB", '\"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\"'
         }
         release {
             minifyEnabled false
@@ -37,6 +37,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    viewBinding {
+        enabled = true
     }
 }
 
