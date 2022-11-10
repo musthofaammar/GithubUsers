@@ -1,7 +1,6 @@
 package id.eureka.githubusers.users.presentation.users
 
 import android.os.Bundle
-import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.eureka.githubusers.core.util.showShortSnackBar
 import id.eureka.githubusers.databinding.ActivityUsersBinding
+import id.eureka.githubusers.users.presentation.LoadingStateAdapter
 import id.eureka.githubusers.users.presentation.model.UserUIState
 import kotlinx.coroutines.flow.collectLatest
 

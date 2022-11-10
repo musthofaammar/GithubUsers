@@ -58,6 +58,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_bio" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_repositories"
         tools:itemCount="3"
         tools:listitem="@layout/item_repository"
         app:layout_constraintTop_toBottomOf="@id/view_border"

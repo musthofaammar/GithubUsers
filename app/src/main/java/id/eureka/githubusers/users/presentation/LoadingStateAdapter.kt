@@ -1,4 +1,4 @@
-package id.eureka.githubusers.users.presentation.users
+package id.eureka.githubusers.users.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

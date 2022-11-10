@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.eureka.githubusers.core.util.showImageCircleUrl
 import id.eureka.githubusers.core.util.showShortSnackBar
 import id.eureka.githubusers.databinding.ActivityDetailUserBinding
 import id.eureka.githubusers.users.presentation.model.DetailUserUIState
 import id.eureka.githubusers.users.presentation.model.User
+import id.eureka.githubusers.users.presentation.LoadingStateAdapter
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -18,13 +20,30 @@ class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val viewModel: DetailUserViewModel by viewModels()
+    private val adapter by lazy { RepositoryAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         getUserFromIntent()
+        setRecyclerView()
         setObserver()
+    }
+
+    private fun setRecyclerView() {
+        with(binding.rvRepositories) {
+            layoutManager = LinearLayoutManager(this@DetailUserActivity)
+            adapter = this@DetailUserActivity.adapter.withLoadStateHeaderAndFooter(
+                footer = LoadingStateAdapter {
+                    this@DetailUserActivity.adapter.retry()
+                },
+                header = LoadingStateAdapter {
+                    this@DetailUserActivity.adapter.retry()
+                }
+            )
+        }
     }
 
     private fun setObserver() {
@@ -34,6 +53,7 @@ class DetailUserActivity : AppCompatActivity() {
                     DetailUserUIState.Empty -> Unit
                     is DetailUserUIState.Error -> showShortSnackBar(binding.root, state.message)
                     is DetailUserUIState.GetUserDetailSuccess -> setUser(state.data)
+                    is DetailUserUIState.GetUserRepositoriesSuccess -> adapter.submitData(state.data)
                     DetailUserUIState.Loading -> Unit
                 }
             }
