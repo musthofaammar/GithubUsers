@@ -1,5 +1,6 @@
 package id.eureka.githubusers.core.api
 
+import id.eureka.githubusers.users.data.model.GetRepositoriesModel
 import id.eureka.githubusers.users.data.model.UserDetailNetworkData
 import id.eureka.githubusers.users.data.model.GetUsersModel
 import retrofit2.Response
@@ -26,6 +27,6 @@ interface ApiServices {
         @Path("user") userName: String,
         @Query("page") page: Int = 1,
         @Query("per_page") size: Int = 10
-    )
+    ) : Response<GetRepositoriesModel>
 
 }

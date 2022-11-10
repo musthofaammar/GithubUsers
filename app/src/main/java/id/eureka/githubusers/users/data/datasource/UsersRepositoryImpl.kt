@@ -7,7 +7,6 @@ import id.eureka.githubusers.core.database.RemoteKeyDao
 import id.eureka.githubusers.core.model.Result
 import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.core.provider.ResourceProvider
-import id.eureka.githubusers.core.util.ErrorMapper
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDetailNetworkDataToUserData
 import id.eureka.githubusers.users.data.model.mapper.UserEntityToUserData
@@ -23,7 +22,6 @@ class UsersRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val remoteKeyDao: RemoteKeyDao,
     private val services: ApiServices,
-    private val errorMapper: ErrorMapper,
     private val resourceProvider: ResourceProvider,
     private val dispatcherProvider: DispatcherProvider
 ) : UsersRepository {
@@ -45,7 +43,7 @@ class UsersRepositoryImpl @Inject constructor(
 //                )
                 userDao.getUsers()
             }
-        ).flow.mapLatest { paging ->
+        ).flow.flowOn(dispatcherProvider.getIO()).mapLatest { paging ->
             paging.map { userEntity ->
                 UserDataToUserDomain.map(UserEntityToUserData.map(userEntity))
             }

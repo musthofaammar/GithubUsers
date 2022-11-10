@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class GetRepositoriesModel(
 
 	@field:SerializedName("GetRepositoriesModel")
-	val getRepositoriesModel: List<GetRepositoriesModelItem?>? = null
+	val getRepositoriesModel: List<RepositoryNetworkData>? = null
 )
 
 data class Owner(
@@ -65,7 +65,7 @@ data class Owner(
 	val organizationsUrl: String? = null
 )
 
-data class GetRepositoriesModelItem(
+data class RepositoryNetworkData(
 
 	@field:SerializedName("allow_forking")
 	val allowForking: Boolean? = null,
