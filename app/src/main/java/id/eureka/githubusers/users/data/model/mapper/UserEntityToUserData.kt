@@ -1,12 +1,11 @@
 package id.eureka.githubusers.users.data.model.mapper
 
 import id.eureka.githubusers.core.util.Mapper
-import id.eureka.githubusers.users.data.model.UserData
-import id.eureka.githubusers.users.data.model.UserNetworkData
+import id.eureka.githubusers.users.data.model.UserDomain
 import id.eureka.githubusers.users.data.model.UserEntity
 
-object UserEntityToUserData : Mapper<UserEntity, UserData> {
-    override fun map(input: UserEntity) = UserData(
+object UserEntityToUserData : Mapper<UserEntity, UserDomain> {
+    override fun map(input: UserEntity) = UserDomain(
         id = input.id,
         bio = input.bio,
         createdAt = input.createdAt,

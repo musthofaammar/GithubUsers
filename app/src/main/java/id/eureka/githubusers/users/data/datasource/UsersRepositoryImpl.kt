@@ -38,9 +38,6 @@ class UsersRepositoryImpl @Inject constructor(
                 userName
             ),
             pagingSourceFactory = {
-//                if (userName.isEmpty()) userDao.getUsers() else userDao.getUsers(
-//                    userName
-//                )
                 userDao.getUsers()
             }
         ).flow.flowOn(dispatcherProvider.getIO()).mapLatest { paging ->

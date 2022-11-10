@@ -1,6 +1,6 @@
 package id.eureka.githubusers.users.data.model
 
-data class UserData(
+data class UserDomain(
     val id: Int,
     val bio: String? = null,
     val createdAt: String? = null,
