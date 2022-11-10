@@ -2,15 +2,13 @@ package id.eureka.githubusers.users.presentation.detailuser
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.eureka.githubusers.core.model.Result
-import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.users.domain.usecase.GetRepositoriesUseCase
 import id.eureka.githubusers.users.domain.usecase.GetUserByUserIdOrUserNameUseCase
 import id.eureka.githubusers.users.presentation.model.DetailUserUIState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +16,6 @@ import javax.inject.Inject
 class DetailUserViewModel @Inject constructor(
     private val getUserByUserIdOrUserNameUseCase: GetUserByUserIdOrUserNameUseCase,
     private val getRepositoriesUseCase: GetRepositoriesUseCase,
-    private val dispatcherProvider: DispatcherProvider,
 ) : ViewModel() {
 
     private val _detailUserState: MutableStateFlow<DetailUserUIState> =
@@ -41,9 +38,13 @@ class DetailUserViewModel @Inject constructor(
 
     fun getUserRepositories(userName: String, userId: Int) {
         viewModelScope.launch {
-            getRepositoriesUseCase.getRepositories(userName, userId).collectLatest { result ->
-                _detailUserState.value = DetailUserUIState.GetUserRepositoriesSuccess(result)
-            }
+
+            getRepositoriesUseCase.getRepositories(userName, userId)
+                .distinctUntilChanged()
+                .cachedIn(viewModelScope)
+                .collectLatest { result ->
+                    _detailUserState.value = DetailUserUIState.GetUserRepositoriesSuccess(result)
+                }
         }
     }
 }

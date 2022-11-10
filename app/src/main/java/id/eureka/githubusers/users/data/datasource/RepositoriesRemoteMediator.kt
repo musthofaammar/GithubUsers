@@ -54,6 +54,7 @@ class RepositoriesRemoteMediator(
                 page,
                 state.config.pageSize
             )
+
             val endOfPaginationReached = responseData.body()?.isEmpty() ?: true
 
             val repositoryEntities = if (!endOfPaginationReached) {
@@ -64,7 +65,7 @@ class RepositoriesRemoteMediator(
                 emptyList()
             }
 
-            if (loadType == LoadType.REFRESH) {
+            if (loadType == LoadType.REFRESH && responseData.isSuccessful) {
                 remoteKeysDao.deleteRepositoryRemoteKeys()
                 repositoryDao.deleteUsersRepositories(userId)
             }
@@ -89,20 +90,20 @@ class RepositoriesRemoteMediator(
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RepositoryEntity>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { data ->
-            remoteKeysDao.getUserRemoteKeysId("r${data.id}")
+            remoteKeysDao.getRepositoryRemoteKeysId("r${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RepositoryEntity>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { data ->
-            remoteKeysDao.getUserRemoteKeysId("r${data.id}")
+            remoteKeysDao.getRepositoryRemoteKeysId("r${data.id}")
         }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RepositoryEntity>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                remoteKeysDao.getUserRemoteKeysId("r${id}")
+                remoteKeysDao.getRepositoryRemoteKeysId("r${id}")
             }
         }
     }

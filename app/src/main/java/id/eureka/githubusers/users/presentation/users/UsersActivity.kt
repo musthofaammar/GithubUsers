@@ -3,8 +3,11 @@ package id.eureka.githubusers.users.presentation.users
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.eureka.githubusers.core.util.showShortSnackBar
@@ -44,7 +47,11 @@ class UsersActivity : AppCompatActivity() {
                     UserUIState.Empty -> Unit
                     is UserUIState.Error -> showShortSnackBar(binding.root, state.message)
                     UserUIState.Loading -> Unit
-                    is UserUIState.SearchUserSuccess -> adapter.submitData(state.data)
+                    is UserUIState.SearchUserSuccess -> {
+                        adapter.submitData(state.data)
+
+                        binding.rvUsers.scrollToPosition(0)
+                    }
                 }
             }
         }
@@ -52,21 +59,32 @@ class UsersActivity : AppCompatActivity() {
 
     private fun setRecyclerView() {
         with(binding.rvUsers) {
-            layoutManager = LinearLayoutManager(this@UsersActivity)
-            adapter = this@UsersActivity.adapter.withLoadStateHeaderAndFooter(
-                footer = LoadingStateAdapter {
+            layoutManager = LinearLayoutManager(context)
+            adapter =
+                this@UsersActivity.adapter.withLoadStateHeaderAndFooter(footer = LoadingStateAdapter {
                     this@UsersActivity.adapter.retry()
-                },
-                header = LoadingStateAdapter {
+                }, header = LoadingStateAdapter {
                     this@UsersActivity.adapter.retry()
-                }
-            )
+                })
+        }
+
+
+        adapter.addLoadStateListener { loadState ->
+            val refreshState = loadState.mediator?.refresh
+
+            binding.tvEmpty.isVisible = binding.rvUsers.isEmpty()
+
+            binding.progressBar.isVisible = refreshState is LoadState.Loading
+
+            if(refreshState is LoadState.Error){
+                showShortSnackBar(binding.root, refreshState.error.message ?: "Holaho")
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        viewModel.searchUser("")
+        viewModel.searchUser(binding.searchBox.edSearchUser.text.toString())
     }
 }

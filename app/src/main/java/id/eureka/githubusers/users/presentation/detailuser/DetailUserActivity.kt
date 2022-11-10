@@ -4,15 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.eureka.githubusers.core.util.showImageCircleUrl
 import id.eureka.githubusers.core.util.showShortSnackBar
 import id.eureka.githubusers.databinding.ActivityDetailUserBinding
+import id.eureka.githubusers.users.presentation.LoadingStateAdapter
 import id.eureka.githubusers.users.presentation.model.DetailUserUIState
 import id.eureka.githubusers.users.presentation.model.User
-import id.eureka.githubusers.users.presentation.LoadingStateAdapter
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -21,6 +24,7 @@ class DetailUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailUserBinding
     private val viewModel: DetailUserViewModel by viewModels()
     private val adapter by lazy { RepositoryAdapter() }
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +48,18 @@ class DetailUserActivity : AppCompatActivity() {
                 }
             )
         }
+
+        adapter.addLoadStateListener { loadState ->
+            val refreshState = loadState.mediator?.refresh
+
+            binding.tvEmpty.isVisible = binding.rvRepositories.isEmpty()
+
+            binding.progressBar.isVisible = refreshState is LoadState.Loading
+
+            if (refreshState is LoadState.Error) {
+                showShortSnackBar(binding.root, refreshState.error.message ?: "Holaho")
+            }
+        }
     }
 
     private fun setObserver() {
@@ -52,7 +68,10 @@ class DetailUserActivity : AppCompatActivity() {
                 when (state) {
                     DetailUserUIState.Empty -> Unit
                     is DetailUserUIState.Error -> showShortSnackBar(binding.root, state.message)
-                    is DetailUserUIState.GetUserDetailSuccess -> setUser(state.data)
+                    is DetailUserUIState.GetUserDetailSuccess -> {
+                        setUser(state.data)
+                        viewModel.getUserRepositories(user.login, user.id)
+                    }
                     is DetailUserUIState.GetUserRepositoriesSuccess -> {
                         adapter.submitData(state.data)
                     }
@@ -74,12 +93,12 @@ class DetailUserActivity : AppCompatActivity() {
         val extras = intent.extras
         extras?.let {
 
-            val user = it.getParcelable(USER_DATA) as User?
+            val getUser = it.getParcelable(USER_DATA) as User?
 
-            user?.let { value ->
+            getUser?.let { value ->
+                user = value
                 with(viewModel) {
                     getUserDetail(value.login, value.id)
-                    getUserRepositories(value.login, value.id)
                 }
             }
         }

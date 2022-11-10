@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class GetUsersModel(
 
+    @field:SerializedName("message")
+    val message: String? = null,
+
     @field:SerializedName("total_count")
     val totalCount: Int,
 

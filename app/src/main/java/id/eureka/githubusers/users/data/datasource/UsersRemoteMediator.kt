@@ -7,6 +7,7 @@ import androidx.paging.RemoteMediator
 import id.eureka.githubusers.core.api.ApiServices
 import id.eureka.githubusers.core.database.RemoteKeyDao
 import id.eureka.githubusers.core.database.RemoteKeys
+import id.eureka.githubusers.core.util.ErrorMapper
 import id.eureka.githubusers.users.data.model.UserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserNetworkDataToUserData
@@ -16,6 +17,7 @@ class UsersRemoteMediator(
     private val userDao: UserDao,
     private val remoteKeysDao: RemoteKeyDao,
     private val services: ApiServices,
+    private val errorMapper: ErrorMapper,
     private val userName: String,
 ) : RemoteMediator<Int, UserEntity>() {
 
@@ -34,13 +36,15 @@ class UsersRemoteMediator(
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
                 val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null)
+                    endOfPaginationReached = remoteKeys != null
+                )
                 prevKey
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
                 val nextKey = remoteKeys?.nextKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null)
+                    endOfPaginationReached = remoteKeys != null
+                )
                 nextKey
             }
         }
@@ -58,9 +62,11 @@ class UsersRemoteMediator(
                 emptyList()
             }
 
-            if (loadType == LoadType.REFRESH) {
+            if (loadType == LoadType.REFRESH && responseData.isSuccessful) {
                 remoteKeysDao.deleteUserRemoteKeys()
-                userDao.deleteUsers()
+
+//                if (userName.isNotEmpty()) userDao.deleteUsers() else userDao.deleteUsersExceptFullData()
+                userDao.deleteUsersExceptFullData()
             }
 
             val prevKey = if (page == 1) null else page - 1
@@ -82,6 +88,12 @@ class UsersRemoteMediator(
                 } catch (exception: Exception) {
                     userDao.insertUser(userEntity)
                 }
+            }
+
+            if (!responseData.isSuccessful) {
+                val message =
+                    errorMapper.getErrorMessageFromBody(responseData.errorBody()?.string())
+                throw Exception(message)
             }
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

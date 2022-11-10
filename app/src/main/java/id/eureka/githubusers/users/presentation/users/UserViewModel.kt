@@ -2,6 +2,7 @@ package id.eureka.githubusers.users.presentation.users
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.eureka.githubusers.R
 import id.eureka.githubusers.core.provider.DispatcherProvider
@@ -29,9 +30,9 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             flowOf(userName)
                 .debounce(600)
-                .onEach { _userUiState.value = UserUIState.Loading }
                 .distinctUntilChanged()
                 .flatMapLatest { query ->
+                    _userUiState.value = UserUIState.Loading
                     searchUserUseCase.searchUser(query)
                 }
                 .flowOn(dispatcherProvider.getDefault())
@@ -42,7 +43,8 @@ class UserViewModel @Inject constructor(
                         )
                     )
                 }
-                .collect { result ->
+                .cachedIn(viewModelScope)
+                .collectLatest { result ->
                     _userUiState.value =
                         UserUIState.SearchUserSuccess(result)
                 }

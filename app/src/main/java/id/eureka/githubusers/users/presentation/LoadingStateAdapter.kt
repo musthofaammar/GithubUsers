@@ -6,12 +6,18 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import id.eureka.githubusers.R
 import id.eureka.githubusers.databinding.ItemLoadingBinding
 
-class LoadingStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>() {
+class LoadingStateAdapter(private val retry: () -> Unit) :
+    LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadingStateViewHolder {
-        val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup, loadState: LoadState
+    ): LoadingStateViewHolder {
+        val binding = ItemLoadingBinding.bind(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
+        )
         return LoadingStateViewHolder(binding, retry)
     }
 

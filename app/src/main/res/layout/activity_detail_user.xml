@@ -13,9 +13,9 @@
         android:id="@+id/iv_user"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:contentDescription="@string/user_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/user_image" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_user_real_name"
@@ -30,21 +30,21 @@
         tools:text="Michael Strong" />
 
     <TextView
-        android:textColor="@color/dugong"
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:textColor="@color/dugong"
         app:layout_constraintStart_toStartOf="@id/tv_user_real_name"
         app:layout_constraintTop_toBottomOf="@id/tv_user_real_name"
         tools:text="/@michaelstrong" />
 
     <TextView
-        android:textColor="@color/dugong"
         android:id="@+id/tv_bio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:textColor="@color/dugong"
         app:layout_constraintStart_toStartOf="@id/tv_user_real_name"
         app:layout_constraintTop_toBottomOf="@id/tv_username"
         tools:text="Android Engineer, learn is my passion" />
@@ -59,10 +59,32 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_repositories"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_repository"
-        app:layout_constraintTop_toBottomOf="@id/view_border"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/view_border"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_repository" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_border" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_border" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
