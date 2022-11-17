@@ -17,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "id.eureka.githubusers.HiltRunner"
     }
 
     buildTypes {
@@ -63,7 +63,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
+
+    def okhttpVersion = "4.9.3"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
     def pagingVersion = "3.1.1"
     implementation "androidx.paging:paging-runtime:$pagingVersion"
@@ -80,10 +82,22 @@ dependencies {
     testImplementation 'app.cash.turbine:turbine:0.11.0'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    kaptTest "com.google.dagger:hilt-android-compiler:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$daggerVersion"
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$daggerVersion"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
+    androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$okhttpVersion"
 }
 
 kapt {
     correctErrorTypes true
+}
+
+hilt{
+    enableTransformForLocalTests = true
 }
