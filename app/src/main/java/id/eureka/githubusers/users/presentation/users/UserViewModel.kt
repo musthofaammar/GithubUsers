@@ -29,7 +29,7 @@ class UserViewModel @Inject constructor(
     fun searchUser(userName: String) {
         viewModelScope.launch {
             flowOf(userName)
-                .debounce(600)
+                .debounce(1000)
                 .distinctUntilChanged()
                 .flatMapLatest { query ->
                     _userUiState.value = UserUIState.Loading

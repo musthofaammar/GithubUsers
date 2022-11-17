@@ -1,4 +1,4 @@
-package id.eureka.githubusers.users
+package id.eureka.githubusers
 
 import dagger.Module
 import dagger.hilt.components.SingletonComponent
@@ -12,6 +12,6 @@ import id.eureka.githubusers.core.di.module.NetworkModule
 )
 class FakeNetworkModule : NetworkModule() {
     override fun getBaseUrl(): String {
-        return "http://127.0.0.1:8080/"
+        return "http://localhost:8080/"
     }
 }

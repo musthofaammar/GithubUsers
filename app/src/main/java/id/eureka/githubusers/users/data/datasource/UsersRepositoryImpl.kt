@@ -8,6 +8,7 @@ import id.eureka.githubusers.core.model.Result
 import id.eureka.githubusers.core.provider.DispatcherProvider
 import id.eureka.githubusers.core.provider.ResourceProvider
 import id.eureka.githubusers.core.util.ErrorMapper
+import id.eureka.githubusers.core.util.wrapEspressoIdlingResource
 import id.eureka.githubusers.users.data.model.mapper.UserDataToUserEntity
 import id.eureka.githubusers.users.data.model.mapper.UserDetailNetworkDataToUserData
 import id.eureka.githubusers.users.data.model.mapper.UserEntityToUserData
@@ -29,28 +30,30 @@ class UsersRepositoryImpl @Inject constructor(
     private val services: ApiServices,
     private val resourceProvider: ResourceProvider,
     private val errorMapper: ErrorMapper,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
 ) : UsersRepository {
     override suspend fun searchUsers(userName: String): Flow<PagingData<UserDomain>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = UsersRemoteMediator.NETWORK_CALL_SIZE,
-                enablePlaceholders = false
-            ),
-            remoteMediator = UsersRemoteMediator(
-                userDao,
-                remoteKeyDao,
-                services,
-                errorMapper,
-                userName
-            ),
-            pagingSourceFactory = {
+        wrapEspressoIdlingResource {
+            return Pager(
+                config = PagingConfig(
+                    pageSize = UsersRemoteMediator.NETWORK_CALL_SIZE,
+                    enablePlaceholders = false
+                ),
+                remoteMediator = UsersRemoteMediator(
+                    userDao,
+                    remoteKeyDao,
+                    services,
+                    errorMapper,
+                    userName
+                ),
+                pagingSourceFactory = {
 //                userDao.getUsers()
-                if (userName.isEmpty()) userDao.getUsers() else userDao.getUsers(userName)
-            }
-        ).flow.flowOn(dispatcherProvider.getIO()).map { paging ->
-            paging.map { userEntity ->
-                UserDataToUserDomain.map(UserEntityToUserData.map(userEntity))
+                    if (userName.isEmpty()) userDao.getUsers() else userDao.getUsers(userName)
+                }
+            ).flow.flowOn(dispatcherProvider.getIO()).map { paging ->
+                paging.map { userEntity ->
+                    UserDataToUserDomain.map(UserEntityToUserData.map(userEntity))
+                }
             }
         }
     }

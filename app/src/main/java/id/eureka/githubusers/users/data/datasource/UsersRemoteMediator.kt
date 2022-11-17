@@ -64,8 +64,6 @@ class UsersRemoteMediator(
 
             if (loadType == LoadType.REFRESH && responseData.isSuccessful) {
                 remoteKeysDao.deleteUserRemoteKeys()
-
-//                if (userName.isNotEmpty()) userDao.deleteUsers() else userDao.deleteUsersExceptFullData()
                 userDao.deleteUsersExceptFullData()
             }
 
